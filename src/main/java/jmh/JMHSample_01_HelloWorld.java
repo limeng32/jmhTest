@@ -31,12 +31,15 @@
 package jmh;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+
 @State(Scope.Thread)
 public class JMHSample_01_HelloWorld {
 
@@ -69,10 +72,11 @@ public class JMHSample_01_HelloWorld {
 	 * "baseline" measurements to compare against.
 	 */
 
-	volatile long i;
-	
+	long i;
+
 	@Benchmark
-	public void wellHelloThere() {
+	@BenchmarkMode(Mode.Throughput)
+	public void wellHelloThere1() {
 		// this method was intentionally left blank.
 		for (i = 0; i < 1000000; i++) {
 			i++;
@@ -100,7 +104,8 @@ public class JMHSample_01_HelloWorld {
 	 */
 
 	public static void main(String[] args) throws RunnerException {
-		Options opt = new OptionsBuilder().include(JMHSample_01_HelloWorld.class.getSimpleName()).forks(1).build();
+		Options opt = new OptionsBuilder().include(JMHSample_01_HelloWorld.class.getSimpleName()).warmupIterations(6)
+				.measurementIterations(5).forks(1).build();
 
 		new Runner(opt).run();
 	}
